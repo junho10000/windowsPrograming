@@ -1,6 +1,10 @@
 ﻿#include <Windows.h>
-
+#include "GameTimer.h"
+#define FPS 1.0f
 // 윈도우 프로시저 함수 : 윈도우로 부터 받은 이벤트를 처리하는 함수 (내가 처리한다)
+
+
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
@@ -142,13 +146,13 @@ int WINAPI WinMain(
 	//}
 
 	MSG msg = { 0 };
-	float frameInterval = 1.0 / 60.0f;
-	float startTime = timeGetTime() * 0.001f;
-	float endTime, frameTime;
+	float frameInterval = 1.0 / FPS;
+	float frameTime = 0.0f;
+	GameTimer gameTimer;
+
 	while (WM_QUIT != msg.message)	//application이 종료되기 전까지 계속 실행
 	{
-		endTime = timeGetTime() * 0.001f;
-		frameTime = endTime - startTime;
+
 		//메세지가 있는지 없는지 검사하고 나옴 (Ture, False)
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
@@ -157,12 +161,15 @@ int WINAPI WinMain(
 		}
 		else
 		{
+			gameTimer.Update();
+			float deltaTime = gameTimer.getDeltaTime();
 			//todo gameUPdate. 
+			frameTime += deltaTime;
 			if (frameInterval <= frameTime)
 			{
 				//todo gameUPdate. 60fps
-				startTime = timeGetTime() * 0.001f;
 				frameTime = 0.0f;
+				OutputDebugString("Updated\n");
 			}
 		}
 
@@ -172,3 +179,5 @@ int WINAPI WinMain(
 	return 0;
 
 }
+
+
